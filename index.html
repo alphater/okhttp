@@ -33,10 +33,11 @@ OkHttp是一个相对成熟的解决方案，据说Android4.4的源码中可以�
 <h3>
 <a id="基本使用" class="anchor" href="#%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8" aria-hidden="true"><span class="octicon octicon-link"></span></a>基本使用</h3>
 
-<p>HTTP GET
-    OkHttpClient client = new OkHttpClient();</p>
+<p>HTTP GET</p>
 
-<pre><code>String run(String url) throws IOException {
+<pre><code>OkHttpClient client = new OkHttpClient();
+
+String run(String url) throws IOException {
     Request request = new Request.Builder().url(url).build();
 
     Response response = client.newCall(request).execute();
@@ -52,48 +53,50 @@ public static void main(String[] args) throws IOException {
 
 <p>Request是OkHttp中访问的请求，Builder是辅助类。Response即OkHttp中的响应。</p>
 
-<p>Response类：
-  /**</p>
+<p>Response类：</p>
+
+<p>/**</p>
 
 <ul>
 <li>Returns true if the code is in [200..300), which means the request was</li>
-<li>
-<p>successfully received, understood, and accepted.
+<li>successfully received, understood, and accepted.
 */
 public boolean isSuccessful() {
   return code &gt;= 200 &amp;&amp; code &lt; 300;
-}
-HTTP POST
-POST提交String数据
-public static final MediaType MEDIA_TYPE_MARKDOWN = MediaType.parse("text/x-markdown; charset=utf-8");</p>
-
-<p>private final OkHttpClient client = new OkHttpClient();</p>
-
-<p>public void run() throws Exception {
-    String postBody = "" + "Releases\n" + "--------\n" + "\n" + " * <em>1.0</em> May 6, 2013\n" + " * <em>1.1</em> June 15, 2013\n"
-            + " * <em>1.2</em> August 11, 2013\n";</p>
-
-<pre><code>Request request = new Request.Builder().url("https://api.github.com/markdown/raw")
-        .post(RequestBody.create(MEDIA_TYPE_MARKDOWN, postBody)).build();
-
-Response response = client.newCall(request).execute();
-if (!response.isSuccessful())
-    throw new IOException("Unexpected code " + response);
-
-System.out.println(response.body().string());
-</code></pre>
-
-<p>}</p>
-
-<p>public static void main(String... args) throws Exception {
-    new PostString().run();
-}
-使用Request的post方法来提交请求体RequestBody</p>
-</li>
+}</li>
 </ul>
 
-<p>POST提交键值对
-OkHttpClient client = new OkHttpClient();
+<p>HTTP POST
+POST提交String数据</p>
+
+<p>public static final MediaType MEDIA_TYPE_MARKDOWN = MediaType.parse("text/x-markdown; charset=utf-8");</p>
+
+<pre><code>private final OkHttpClient client = new OkHttpClient();
+
+public void run() throws Exception {
+    String postBody = "" + "Releases\n" + "--------\n" + "\n" + " * _1.0_ May 6, 2013\n" + " * _1.1_ June 15, 2013\n"
+            + " * _1.2_ August 11, 2013\n";
+
+    Request request = new Request.Builder().url("https://api.github.com/markdown/raw")
+            .post(RequestBody.create(MEDIA_TYPE_MARKDOWN, postBody)).build();
+
+    Response response = client.newCall(request).execute();
+    if (!response.isSuccessful())
+        throw new IOException("Unexpected code " + response);
+
+    System.out.println(response.body().string());
+}
+
+public static void main(String... args) throws Exception {
+    new PostString().run();
+}
+</code></pre>
+
+<p>使用Request的post方法来提交请求体RequestBody</p>
+
+<p>POST提交键值对</p>
+
+<p>OkHttpClient client = new OkHttpClient();
 String post(String url, String json) throws IOException {</p>
 
 <pre><code> RequestBody formBody = new FormEncodingBuilder()
@@ -117,8 +120,9 @@ if (response.isSuccessful()) {
 
 <p>}</p>
 
-<p>POST提交File
-public static final MediaType MEDIA_TYPE_MARKDOWN = MediaType.parse("text/x-markdown; charset=utf-8");</p>
+<p>POST提交File</p>
+
+<p>public static final MediaType MEDIA_TYPE_MARKDOWN = MediaType.parse("text/x-markdown; charset=utf-8");</p>
 
 <pre><code>private final OkHttpClient client = new OkHttpClient();
 
@@ -148,8 +152,9 @@ public static void main(String... args) throws Exception {
 
 <p>OkHttp官方文档并不建议我们创建多个OkHttpClient，因此全局使用一个。 如果有需要，可以使用clone方法，再进行自定义。这点在后面的高级教程里会提到。</p>
 
-<p>enqueue为OkHttp提供的异步方法，入门教程中并没有提到，后面的高级教程里会有解释。
-private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+<p>enqueue为OkHttp提供的异步方法，入门教程中并没有提到，后面的高级教程里会有解释。</p>
+
+<p>private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private static final MediaType MEDIA_TYPE_MARKDOWN = MediaType.parse("text/x-markdown; charset=utf-8");</p>
 
 <pre><code>private volatile static AsyncOkHttp instance;
@@ -562,8 +567,9 @@ public void submitRequest(Request request, BaseResponseHandler responseHandler) 
 <p>同步get
 下载一个文件，打印他的响应头，以string形式打印响应体。
 响应体的 string() 方法对于小文档来说十分方便、高效。但是如果响应体太大（超过1MB），应避免适应 string()方法 ，因为他会将把整个文档加载到内存中。
-对于超过1MB的响应body，应使用流的方式来处理body。
-private final OkHttpClient client = new OkHttpClient();
+对于超过1MB的响应body，应使用流的方式来处理body。</p>
+
+<p>private final OkHttpClient client = new OkHttpClient();
  
 public void run() throws Exception {
     Request request = new Request.Builder()
@@ -583,8 +589,9 @@ public void run() throws Exception {
 
 <p>取消一个Call
 使用Call.cancel()可以立即停止掉一个正在执行的call。如果一个线程正在写请求或者读响应，将会引发IOException。当call没有必要的时候，使用这个api可以节约网络资源。例如当用户离开一个应用时。不管同步还是异步的call都可以取消。
-你可以通过tags来同时取消多个请求。当你构建一请求时，使用RequestBuilder.tag(tag)来分配一个标签。之后你就可以用OkHttpClient.cancel(tag)来取消所有带有这个tag的call。
-private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+你可以通过tags来同时取消多个请求。当你构建一请求时，使用RequestBuilder.tag(tag)来分配一个标签。之后你就可以用OkHttpClient.cancel(tag)来取消所有带有这个tag的call。</p>
+
+<p>private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
     private final OkHttpClient client = new OkHttpClient();</p>
 
 <pre><code>public void run() throws Exception {
@@ -623,8 +630,9 @@ public static void main(String... args) throws Exception {
 <p>响应缓存
 为了缓存响应，你需要一个你可以读写的缓存目录，和缓存大小的限制。这个缓存目录应该是私有的，不信任的程序应不能读取缓存内容。
 一个缓存目录同时拥有多个缓存访问是错误的。大多数程序只需要调用一次new OkHttp()，在第一次调用时配置好缓存，然后其他地方只需要调用这个实例就可以了。否则两个缓存示例互相干扰，破坏响应缓存，而且有可能会导致程序崩溃。
-响应缓存使用HTTP头作为配置。你可以在请求头中添加Cache-Control: max-stale=3600 ,OkHttp缓存会支持。你的服务通过响应头确定响应缓存多长时间，例如使用Cache-Control: max-age=9600。
-private final OkHttpClient client;</p>
+响应缓存使用HTTP头作为配置。你可以在请求头中添加Cache-Control: max-stale=3600 ,OkHttp缓存会支持。你的服务通过响应头确定响应缓存多长时间，例如使用Cache-Control: max-age=9600。</p>
+
+<p>private final OkHttpClient client;</p>
 
 <pre><code>public CacheResponse(File cacheDirectory) throws Exception {
     int cacheSize = 10 * 1024 * 1024; // 10 MiB
@@ -699,10 +707,10 @@ public static void main(String... args) throws Exception {
 </code></pre>
 
 <p>每个call的单独配置
-使用OkHttpClient，所有的HTTP Client配置包括代理设置、超时设置、缓存设置。当你需要为单个call改变配置的时候，clone 一个 OkHttpClient。这个api将会返回一个浅拷贝（shallow copy），你可以用来单独自定义。下面的例子中，我们让一个请求是500ms的超时、另一个是3000ms的超时。
-private final OkHttpClient client = new OkHttpClient();</p>
+使用OkHttpClient，所有的HTTP Client配置包括代理设置、超时设置、缓存设置。当你需要为单个call改变配置的时候，clone 一个 OkHttpClient。这个api将会返回一个浅拷贝（shallow copy），你可以用来单独自定义。下面的例子中，我们让一个请求是500ms的超时、另一个是3000ms的超时。</p>
 
-<p>public void run() throws Exception {
+<p>private final OkHttpClient client = new OkHttpClient();
+public void run() throws Exception {
     Request request = new Request.Builder()
         .url("<a href="http://httpbin.org/delay/1">http://httpbin.org/delay/1</a>") // This URL is served with a 1 second delay.
         .build();</p>
@@ -728,13 +736,14 @@ try {
 }
 </code></pre>
 
-<p>}
-处理验证
-OkHttp会自动重试未验证的请求。当响应是401 Not Authorized时，Authenticator会被要求提供证书。Authenticator的实现中需要建立一个新的包含证书的请求。如果没有证书可用，返回null来跳过尝试。
-当需要实现一个Basic challenge， 使用Credentials.basic(username, password)来编码请求头。
-private final OkHttpClient client = new OkHttpClient();</p>
+<p>}</p>
 
-<p>public void run() throws Exception {
+<p>处理验证
+OkHttp会自动重试未验证的请求。当响应是401 Not Authorized时，Authenticator会被要求提供证书。Authenticator的实现中需要建立一个新的包含证书的请求。如果没有证书可用，返回null来跳过尝试。
+当需要实现一个Basic challenge， 使用Credentials.basic(username, password)来编码请求头。</p>
+
+<p>private final OkHttpClient client = new OkHttpClient();
+public void run() throws Exception {
     client.setAuthenticator(new Authenticator() {
       <a href="https://github.com/Override" class="user-mention">@Override</a> public Request authenticate(Proxy proxy, Response response) {
         System.out.println("Authenticating for response: " + response);
