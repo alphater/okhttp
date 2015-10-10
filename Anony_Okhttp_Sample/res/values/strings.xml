@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Anony Okhttp</string>
+    <string name="no_params_get">不带参GET</string>
+    <string name="params_get">带参GET</string>
+    <string name="no_params_post">不带参POST</string>
+    <string name="params_post">带参POST</string>
+    <string name="no_params_put">不带参PUT</string>
+    <string name="params_put">带参PUT</string>
+    <string name="upload_file">上传File</string>
+    <string name="upload_byte">上传byte[]</string>
+    <string name="upload_bytestring">上传ByteString</string>
+
+</resources>
